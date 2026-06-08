@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grimorio — Camino Cuántico del Yoga</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
+  <style>
+    /* ── Root Variables ── */
+    :root {
+      --void:        #05030e;
+      --abyss:       #080614;
+      --deep:        #0f0b20;
+      --surface:     #16112e;
+      --card:        #1c1638;
+      --gold:        #c8a84b;
+      --gold-bright: #e4c872;
+      --gold-dim:    rgba(200,168,75,0.35);
+      --gold-faint:  rgba(200,168,75,0.1);
+      --purple:      #8b5cf6;
+      --purple-dim:  rgba(139,92,246,0.35);
+      --purple-faint:rgba(139,92,246,0.08);
+      --blue:        #4a9eff;
+      --blue-dim:    rgba(74,158,255,0.25);
+      --blue-faint:  rgba(74,158,255,0.08);
+      --text:        #f0e8d4;
+      --text-soft:   #c8b890;
+      --text-muted:  #7a6e58;
+      --border:      rgba(240,232,212,0.06);
+      --border-gold: rgba(200,168,75,0.18);
+    }
+
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--void);
+      color: var(--text);
+      font-family: 'EB Garamond', Georgia, serif;
+      line-height: 1.8;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── Ambient Background ── */
+    .cosmos {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      overflow: hidden;
+    }
+    .cosmos-nebula {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 45% at 10% 20%, rgba(60,30,120,0.18) 0%, transparent 65%),
+        radial-gradient(ellipse 45% 60% at 90% 80%, rgba(20,50,110,0.14) 0%, transparent 65%),
+        radial-gradient(ellipse 80% 35% at 55% 5%,  rgba(100,40,70,0.08) 0%, transparent 55%),
+        radial-gradient(ellipse 35% 70% at 80% 35%, rgba(50,20,90,0.10) 0%, transparent 60%);
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: #fff;
+      animation: starTwinkle var(--d,4s) ease-in-out infinite var(--del,0s);
+    }
+    @keyframes starTwinkle {
+      0%,100% { opacity: var(--lo,.05); }
+      50%      { opacity: var(--hi,.5); }
+    }
+
+    /* ── Grain Overlay ── */
+    .grain {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      opacity: 0.032;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 160px 160px;
+    }
+
+    /* ── Navigation ── */
+    .sidenav {
+      position: fixed;
+      left: 0; top: 0; bottom: 0;
+      width: 60px;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 24px 0;
+      border-right: 1px solid var(--border);
+    }
+    .sidenav-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .sidenav-dot:hover,
+    .sidenav-dot.active { background: var(--gold); transform: scale(1.6); }
+    .sidenav-dot::after {
+      content: attr(data-label);
+      position: absolute;
+      left: 18px; top: 50%;
+      transform: translateY(-50%);
+      white-space: nowrap;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      background: var(--deep);
+      padding: 4px 8px;
+      border: 1px solid var(--border-gold);
+    }
+    .sidenav-dot:hover::after { opacity: 1; }
+
+    /* ── Top Bar ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 20;
+      height: 52px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 80px 0 80px;
+      background: linear-gradient(to bottom, var(--void), transparent);
+    }
+    .topbar-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+    .topbar-logo span { color: var(--gold); }
+    .topbar-back {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .topbar-back:hover { color: var(--gold); }
+    .topbar-back svg { width: 12px; height: 12px; }
+
+    /* ── Main Layout ── */
+    .page {
+      position: relative; z-index: 2;
+      padding-left: 60px;
+    }
+
+    /* ── Sections ── */
+    section {
+      padding: 120px 80px 120px 80px;
+      max-width: 1100px;
+      position: relative;
+    }
+    section.narrow { max-width: 780px; }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 80px;
+      padding-bottom: 80px;
+      overflow: hidden;
+    }
+    .hero-mandala {
+      position: absolute;
+      right: -60px; top: 50%;
+      transform: translateY(-50%);
+      width: 600px; height: 600px;
+      opacity: 0.06;
+      animation: mandalaSpin 80s linear infinite;
+      pointer-events: none;
+    }
+    .hero-mandala-inner {
+      position: absolute;
+      right: 80px; top: 50%;
+      transform: translateY(-50%);
+      width: 300px; height: 300px;
+      opacity: 0.04;
+      animation: mandalaSpin 40s linear infinite reverse;
+      pointer-events: none;
+    }
+    @keyframes mandalaSpin { to { transform: translateY(-50%) rotate(360deg); } }
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.6em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 1s cubic-bezier(.22,1,.36,1) 0.3s forwards;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 52px;
+      opacity: 0;
+      animation: fadeUp 1s cubic-bezier(.22,1,.36,1) 0.5s forwards;
+    }
+    .hero-tag::before, .hero-tag::after {
+      content: '';
+      width: 40px; height: 1px;
+      background: var(--border-gold);
+    }
+    .hero-grimorio {
+      font-family: 'Cinzel Decorative', serif;
+      font-weight: 900;
+      font-size: clamp(4rem, 9vw, 8rem);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      color: var(--gold);
+      text-shadow: 0 0 80px rgba(200,168,75,0.3), 0 0 160px rgba(200,168,75,0.1);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 1.2s cubic-bezier(.22,1,.36,1) 0.1s forwards;
+    }
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 400;
+      font-size: clamp(1.4rem, 3.5vw, 2.6rem);
+      line-height: 1.3;
+      color: var(--text);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 1.2s cubic-bezier(.22,1,.36,1) 0.3s forwards;
+    }
+    .hero-subtitle {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1rem, 2vw, 1.35rem);
+      color: var(--text-soft);
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeUp 1.2s cubic-bezier(.22,1,.36,1) 0.5s forwards;
+    }
+    .hero-desc {
+      font-family: 'EB Garamond', serif;
+      font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+      color: var(--text-muted);
+      max-width: 500px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 1.2s cubic-bezier(.22,1,.36,1) 0.7s forwards;
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 48px; left: 80px;
+      display: flex; align-items: center; gap: 14px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      opacity: 0;
+      animation: fadeUp 1s ease 1.5s forwards;
+    }
+    .hero-scroll-line {
+      width: 40px; height: 1px;
+      background: var(--border-gold);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%,100% { width: 40px; opacity: 0.4; }
+      50%      { width: 60px; opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Section Label ── */
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .section-label::before {
+      content: '';
+      width: 28px; height: 1px;
+      background: var(--gold-dim);
+    }
+
+    /* ── Section Heading ── */
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .section-title em {
+      font-family: 'Cinzel Decorative', serif;
+      font-style: normal;
+      color: var(--gold);
+    }
+    .section-subtitle {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: 1.2rem;
+      color: var(--text-soft);
+      margin-bottom: 52px;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      display: flex; align-items: center; gap: 20px;
+      margin: 48px 0;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1; height: 1px;
+      background: linear-gradient(to right, transparent, var(--border-gold));
+    }
+    .divider::after { background: linear-gradient(to left, transparent, var(--border-gold)); }
+    .divider-ornament {
+      font-size: 14px;
+      color: var(--gold-dim);
+      letter-spacing: 8px;
+    }
+
+    /* ── Índice ── */
+    #indice { background: var(--abyss); }
+    .index-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+    }
+    .index-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 20px 24px;
+      background: var(--deep);
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+    }
+    .index-item::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--gold);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+    }
+    .index-item:hover {
+      background: var(--surface);
+      border-color: var(--border-gold);
+      transform: translateX(4px);
+    }
+    .index-item:hover::before { transform: scaleY(1); }
+    .index-num {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: var(--gold-dim);
+      padding-top: 4px;
+      min-width: 52px;
+      flex-shrink: 0;
+      transition: color 0.3s;
+    }
+    .index-item:hover .index-num { color: var(--gold); }
+    .index-name {
+      font-family: 'EB Garamond', serif;
+      font-size: 15px;
+      color: rgba(240,232,212,0.75);
+      line-height: 1.5;
+      transition: color 0.3s;
+    }
+    .index-item:hover .index-name { color: var(--text); }
+    .index-sub {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 13px;
+      display: block;
+    }
+
+    /* ── Body Text ── */
+    .prose {
+      border-left: 1px solid var(--gold-dim);
+      padding-left: 32px;
+    }
+    .prose p {
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: rgba(240,232,212,0.82);
+      margin-bottom: 24px;
+    }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose strong { color: var(--gold); font-weight: 500; }
+    .prose em { color: var(--text-soft); }
+
+    .text-body {
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: rgba(240,232,212,0.82);
+      margin-bottom: 24px;
+    }
+
+    /* ── Two Column Intro ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+    .two-col-label {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .two-col-heading {
+      font-family: 'Cinzel', serif;
+      font-weight: 500;
+      font-size: 1.3rem;
+      line-height: 1.4;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+    .two-col-body {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: rgba(240,232,212,0.75);
+    }
+    .two-col-body p { margin-bottom: 18px; }
+
+    /* ── Philosophy Cards ── */
+    .philosophy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 48px 0;
+    }
+    .philosophy-card {
+      background: var(--deep);
+      border: 1px solid var(--border);
+      padding: 28px 24px;
+      position: relative;
+    }
+    .philosophy-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, var(--purple), transparent);
+    }
+    .philosophy-num {
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--purple-dim);
+      margin-bottom: 12px;
+      line-height: 1;
+    }
+    .philosophy-text {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-soft);
+    }
+
+    /* ── Dimension Section ── */
+    .dimension-section {
+      border-top: 1px solid var(--border);
+      position: relative;
+    }
+    .dimension-section:nth-child(even) { background: var(--abyss); }
+
+    .dimension-header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 40px;
+      align-items: start;
+      margin-bottom: 64px;
+    }
+    .dimension-number-large {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(5rem, 12vw, 10rem);
+      font-weight: 900;
+      line-height: 0.85;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--gold-dim);
+      letter-spacing: -0.05em;
+      user-select: none;
+    }
+    .dimension-info {}
+    .dimension-label {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .dimension-name {
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .dimension-sanskrit {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: 1.8rem;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .dimension-desc {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--text-soft);
+    }
+
+    /* ── Physics Context Box ── */
+    .physics-box {
+      background: var(--blue-faint);
+      border: 1px solid var(--blue-dim);
+      border-left: 3px solid var(--blue);
+      padding: 32px 36px;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    .physics-box-label {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 16px;
+    }
+    .physics-box p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: rgba(240,232,212,0.75);
+      margin-bottom: 14px;
+    }
+    .physics-box p:last-child { margin-bottom: 0; }
+
+    /* ── Formula ── */
+    .formula-card {
+      background: var(--surface);
+      border: 1px solid var(--border-gold);
+      padding: 40px 40px 36px;
+      margin: 40px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .formula-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+    }
+    .formula-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
+    }
+    .formula-label {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 20px;
+    }
+    .formula-equation {
+      font-family: 'EB Garamond', serif;
+      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      color: var(--gold-bright);
+      text-align: center;
+      margin-bottom: 28px;
+      letter-spacing: 0.05em;
+      text-shadow: 0 0 30px rgba(200,168,75,0.4);
+      padding: 20px;
+      background: var(--gold-faint);
+      border: 1px solid var(--gold-dim);
+    }
+    .formula-vars {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .formula-var {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'EB Garamond', serif;
+      font-size: 1rem;
+      color: var(--text-soft);
+    }
+    .formula-var-sym {
+      font-style: italic;
+      color: var(--gold);
+      font-size: 1.1rem;
+    }
+    .formula-explanation {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: rgba(240,232,212,0.78);
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+
+    /* ── Yogic Interpretation ── */
+    .yogic-card {
+      background: var(--purple-faint);
+      border: 1px solid var(--purple-dim);
+      border-left: 3px solid var(--purple);
+      padding: 32px 36px;
+      margin: 40px 0;
+    }
+    .yogic-label {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 16px;
+    }
+    .yogic-card p {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: rgba(240,232,212,0.8);
+      margin-bottom: 14px;
+    }
+    .yogic-card p:last-child { margin-bottom: 0; }
+
+    /* ── Practice Grid ── */
+    .practice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 40px 0;
+    }
+    .practice-card {
+      background: var(--deep);
+      border: 1px solid var(--border);
+      padding: 28px;
+      position: relative;
+      transition: border-color 0.3s;
+    }
+    .practice-card:hover { border-color: var(--border-gold); }
+    .practice-card-icon {
+      width: 32px; height: 32px;
+      margin-bottom: 16px;
+      color: var(--gold-dim);
+    }
+    .practice-card-label {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .practice-card-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 500;
+      font-size: 1.05rem;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .practice-card p {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: var(--text-soft);
+    }
+    .practice-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .practice-card li {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-soft);
+      padding: 6px 0;
+      padding-left: 20px;
+      position: relative;
+      border-bottom: 1px solid var(--border);
+    }
+    .practice-card li:last-child { border-bottom: none; }
+    .practice-card li::before {
+      content: '✦';
+      position: absolute;
+      left: 0;
+      color: var(--gold-dim);
+      font-size: 8px;
+      top: 10px;
+    }
+    .practice-card li strong {
+      color: var(--gold);
+      font-weight: 500;
+    }
+    .practice-full {
+      grid-column: 1 / -1;
+    }
+    .breathing-pattern {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+    .breath-step {
+      padding: 6px 14px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 2px;
+    }
+    .breath-in  { background: var(--blue-faint);   border: 1px solid var(--blue-dim);   color: var(--blue); }
+    .breath-out { background: var(--purple-faint); border: 1px solid var(--purple-dim); color: var(--purple); }
+    .breath-pause { background: var(--gold-faint); border: 1px solid var(--gold-dim);   color: var(--gold); }
+
+    /* ── Sacred Teaching Quote ── */
+    .sacred-quote {
+      position: relative;
+      margin: 60px 0 0;
+      padding: 48px 60px;
+      text-align: center;
+      background: var(--gold-faint);
+      border: 1px solid var(--border-gold);
+    }
+    .sacred-quote::before, .sacred-quote::after {
+      content: '';
+      position: absolute;
+      left: 20px; right: 20px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
+    }
+    .sacred-quote::before { top: 8px; }
+    .sacred-quote::after  { bottom: 8px; }
+    .sacred-quote-ornament {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 24px;
+    }
+    .sacred-quote blockquote {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.2rem, 2.5vw, 1.65rem);
+      line-height: 1.7;
+      color: var(--gold-bright);
+      text-shadow: 0 0 40px rgba(200,168,75,0.2);
+    }
+
+    /* ── Prefacio List ── */
+    .prefacio-list {
+      list-style: none;
+      padding: 0;
+      margin: 24px 0;
+    }
+    .prefacio-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 1.05rem;
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+    .prefacio-list li:last-child { border-bottom: none; }
+    .prefacio-list li::before {
+      content: '✦';
+      color: var(--gold);
+      font-size: 10px;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative; z-index: 2;
+      padding: 60px 80px 60px 140px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--abyss);
+    }
+    .footer-text {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .footer-ornament {
+      color: var(--gold-dim);
+      font-size: 20px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .sidenav { display: none; }
+      .page { padding-left: 0; }
+      section { padding: 80px 32px; }
+      #hero { padding: 80px 32px 60px; }
+      .hero-mandala { display: none; }
+      .topbar { padding: 0 32px; }
+      .dimension-header { grid-template-columns: 1fr; gap: 20px; }
+      .dimension-number-large { font-size: 5rem; }
+      .two-col { grid-template-columns: 1fr; gap: 36px; }
+      .practice-grid { grid-template-columns: 1fr; }
+      .index-grid { grid-template-columns: 1fr; }
+      .philosophy-grid { grid-template-columns: 1fr; }
+      footer { padding: 40px 32px; flex-direction: column; gap: 20px; text-align: center; }
+      .sacred-quote { padding: 36px 28px; }
+    }
+    @media (max-width: 600px) {
+      section { padding: 60px 20px; }
+      .hero-grimorio { font-size: 3.2rem; }
+      .formula-equation { font-size: 1.3rem; }
+    }
+
+    /* ── Reveal Animation ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(.22,1,.36,1), transform 0.8s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- Ambient Background -->
+<div class="cosmos" aria-hidden="true">
+  <div class="cosmos-nebula"></div>
+  <div id="stars"></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- Side Navigation -->
+<nav class="sidenav" aria-label="Secciones">
+  <div class="sidenav-dot active" data-target="hero"    data-label="Portada"></div>
+  <div class="sidenav-dot"        data-target="indice"  data-label="Índice"></div>
+  <div class="sidenav-dot"        data-target="filosofia" data-label="Filosofía"></div>
+  <div class="sidenav-dot"        data-target="intro"   data-label="Introducción"></div>
+  <div class="sidenav-dot"        data-target="dim0"    data-label="Dimensión 0"></div>
+  <div class="sidenav-dot"        data-target="dim1"    data-label="Dimensión 1"></div>
+</nav>
+
+<!-- Top Bar -->
+<header class="topbar" aria-label="Encabezado">
+  <div class="topbar-logo">
+    <span>Grimorio</span> · Cuántico del Yoga
+  </div>
+  <a href="/" class="topbar-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+    Volver
+  </a>
+</header>
+
+<main class="page">
+
+  <!-- ══════════════════════════════════════
+       HERO / PORTADA
+  ══════════════════════════════════════ -->
+  <section id="hero">
+    <!-- Sacred geometry SVG (large) -->
+    <svg class="hero-mandala" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="250" cy="250" r="240" stroke="#c8a84b" stroke-width="0.5"/>
+      <circle cx="250" cy="250" r="200" stroke="#c8a84b" stroke-width="0.5"/>
+      <circle cx="250" cy="250" r="160" stroke="#c8a84b" stroke-width="0.5"/>
+      <circle cx="250" cy="250" r="120" stroke="#c8a84b" stroke-width="0.5"/>
+      <circle cx="250" cy="250" r="80"  stroke="#c8a84b" stroke-width="0.5"/>
+      <circle cx="250" cy="250" r="40"  stroke="#c8a84b" stroke-width="0.5"/>
+      <circle cx="250" cy="10"  r="240" stroke="#c8a84b" stroke-width="0.3"/>
+      <circle cx="250" cy="490" r="240" stroke="#c8a84b" stroke-width="0.3"/>
+      <circle cx="10"  cy="250" r="240" stroke="#c8a84b" stroke-width="0.3"/>
+      <circle cx="490" cy="250" r="240" stroke="#c8a84b" stroke-width="0.3"/>
+      <circle cx="42"  cy="42"  r="240" stroke="#c8a84b" stroke-width="0.3"/>
+      <circle cx="458" cy="42"  r="240" stroke="#c8a84b" stroke-width="0.3"/>
+      <circle cx="42"  cy="458" r="240" stroke="#c8a84b" stroke-width="0.3"/>
+      <circle cx="458" cy="458" r="240" stroke="#c8a84b" stroke-width="0.3"/>
+      <line x1="250" y1="0"   x2="250" y2="500" stroke="#c8a84b" stroke-width="0.3"/>
+      <line x1="0"   y1="250" x2="500" y2="250" stroke="#c8a84b" stroke-width="0.3"/>
+      <line x1="0"   y1="0"   x2="500" y2="500" stroke="#c8a84b" stroke-width="0.3"/>
+      <line x1="500" y1="0"   x2="0"   y2="500" stroke="#c8a84b" stroke-width="0.3"/>
+      <!-- Hexagon -->
+      <polygon points="250,50 457,175 457,325 250,450 43,325 43,175" stroke="#c8a84b" stroke-width="0.4" fill="none"/>
+      <polygon points="250,90 420,195 420,305 250,410 80,305 80,195" stroke="#c8a84b" stroke-width="0.3" fill="none"/>
+      <polygon points="250,130 385,215 385,285 250,370 115,285 115,215" stroke="#c8a84b" stroke-width="0.3" fill="none"/>
+    </svg>
+
+    <!-- Inner sacred geometry -->
+    <svg class="hero-mandala-inner" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="150" cy="150" r="140" stroke="#8b5cf6" stroke-width="0.8"/>
+      <circle cx="150" cy="150" r="100" stroke="#8b5cf6" stroke-width="0.8"/>
+      <circle cx="150" cy="150" r="60"  stroke="#8b5cf6" stroke-width="0.8"/>
+      <polygon points="150,20 267,85 267,215 150,280 33,215 33,85" stroke="#8b5cf6" stroke-width="0.6" fill="none"/>
+      <polygon points="150,50 240,100 240,200 150,250 60,200 60,100" stroke="#8b5cf6" stroke-width="0.4" fill="none"/>
+    </svg>
+
+    <div class="hero-eyebrow">Texto Sagrado Moderno</div>
+    <div class="hero-tag">Una filosofía de expansión multidimensional</div>
+
+    <div class="hero-grimorio">GRIMORIO</div>
+    <h1 class="hero-title">Camino Cuántico del Yoga</h1>
+    <p class="hero-subtitle">La travesía sagrada hacia el fuego interior</p>
+    <p class="hero-desc">Una filosofía de expansión interior, conciencia unificada y transformación multidimensional. El puente místico entre ciencia y conciencia.</p>
+
+    <div class="hero-scroll" aria-hidden="true">
+      <div class="hero-scroll-line"></div>
+      <span>Explorar</span>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       ÍNDICE
+  ══════════════════════════════════════ -->
+  <section id="indice" class="reveal">
+    <div class="section-label">Contenidos</div>
+    <h2 class="section-title">Índice del <em>Grimorio</em></h2>
+    <p class="section-subtitle">Mapa dimensional de la travesía</p>
+
+    <div class="index-grid">
+      <div class="index-item">
+        <span class="index-num">Intro</span>
+        <span class="index-name">
+          Llamado al Viajero
+          <span class="index-sub">El portal de resonancia cuántica</span>
+        </span>
+      </div>
+      <div class="index-item">
+        <span class="index-num">Prefacio</span>
+        <span class="index-name">
+          El Fuego que te Guía
+          <span class="index-sub">Tecnología del alma</span>
+        </span>
+      </div>
+      <div class="index-item">
+        <span class="index-num">Dim. 0</span>
+        <span class="index-name">
+          Śūnyabindu
+          <span class="index-sub">El Vacío Sagrado</span>
+        </span>
+      </div>
+      <div class="index-item">
+        <span class="index-num">Dim. 1</span>
+        <span class="index-name">
+          Anukalpa
+          <span class="index-sub">La Vibración Primordial</span>
+        </span>
+      </div>
+      <div class="index-item">
+        <span class="index-num">Dim. 2</span>
+        <span class="index-name">
+          Dvaita
+          <span class="index-sub">El Espejo de la Dualidad</span>
+        </span>
+      </div>
+      <div class="index-item">
+        <span class="index-num">Dim. 3</span>
+        <span class="index-name">
+          Saṅgha
+          <span class="index-sub">La Unidad en la Diversidad</span>
+        </span>
+      </div>
+      <div class="index-item">
+        <span class="index-num">Dim. 4</span>
+        <span class="index-name">
+          Bhāva
+          <span class="index-sub">El Sentido que Transforma</span>
+        </span>
+      </div>
+      <div class="index-item">
+        <span class="index-num">Dim. 5</span>
+        <span class="index-name">
+          Kriyā
+          <span class="index-sub">La Acción Consciente</span>
+        </span>
+      </div>
+      <div class="index-item">
+        <span class="index-num">Dim. 6</span>
+        <span class="index-name">
+          Tattva
+          <span class="index-sub">El Núcleo Esencial</span>
+        </span>
+      </div>
+      <div class="index-item">
+        <span class="index-num">Dim. 7</span>
+        <span class="index-name">
+          Rasa
+          <span class="index-sub">El Néctar de lo Invisible</span>
+        </span>
+      </div>
+      <div class="index-item">
+        <span class="index-num">Dim. 8</span>
+        <span class="index-name">
+          Bhūmikā
+          <span class="index-sub">El Terreno de los Mundos</span>
+        </span>
+      </div>
+      <div class="index-item">
+        <span class="index-num">Dim. 9</span>
+        <span class="index-name">
+          Jñāna
+          <span class="index-sub">El Conocimiento Encarnado</span>
+        </span>
+      </div>
+      <div class="index-item">
+        <span class="index-num">Dim. 10</span>
+        <span class="index-name">
+          Ātman
+          <span class="index-sub">El Yo Cuántico</span>
+        </span>
+      </div>
+      <div class="index-item">
+        <span class="index-num">Dim. 11</span>
+        <span class="index-name">
+          Mokṣa
+          <span class="index-sub">La Libertad del Alma</span>
+        </span>
+      </div>
+      <div class="index-item">
+        <span class="index-num">Epílogo</span>
+        <span class="index-name">
+          El Retorno del Fuego Sagrado
+          <span class="index-sub">Glosario Cuántico-Yóguico</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       FILOSOFÍA
+  ══════════════════════════════════════ -->
+  <section id="filosofia" class="reveal">
+    <div class="section-label">Fundamentos</div>
+    <h2 class="section-title">Puentes entre <em>Ciencia</em> y Conciencia</h2>
+    <p class="section-subtitle">El siguiente texto emerge de forma lúdica, expansiva y mística al dialogar con el Ser. Es poesía en tiempo real, alquimia de palabras.</p>
+
+    <div class="divider"><span class="divider-ornament">✦ ✦ ✦</span></div>
+
+    <div class="prose reveal reveal-delay-1">
+      <p>
+        Cada una de las 11 dimensiones de la teoría M es expresada en lenguaje simbólico cuántico,
+        con su interpretación metafísica, y su validación físico-matemática (cuando aplica).
+        Aquí se construye el puente místico entre ciencia y conciencia, entre el yoga del cuerpo
+        y el yoga del alma, entre el tiempo lineal y la eternidad.
+      </p>
+      <p>
+        En el yoga, se busca trascender la ilusión del ego y experimentar la unidad, algo que
+        resuena con la no-localidad y la interconexión de la mecánica cuántica.
+        Tanto el yoga como la física cuántica rompen con la visión lineal, materialista y rígida del mundo.
+      </p>
+    </div>
+
+    <div class="philosophy-grid reveal reveal-delay-2">
+      <div class="philosophy-card">
+        <div class="philosophy-num">01</div>
+        <div class="philosophy-text">
+          <strong style="color:var(--gold);display:block;margin-bottom:8px;font-family:'Cinzel',serif;font-size:0.9rem;">Integración</strong>
+          El Camino Cuántico del Yoga explora la interconexión de todas las cosas y la influencia de la conciencia en la realidad. Paralelismos entre la práctica del yoga y los principios de la física cuántica.
+        </div>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-num">02</div>
+        <div class="philosophy-text">
+          <strong style="color:var(--gold);display:block;margin-bottom:8px;font-family:'Cinzel',serif;font-size:0.9rem;">Enfoque Holístico</strong>
+          La física cuántica del Yoga enfatiza la adaptación de la práctica a las frecuencias y estados de conciencia individuales. Visión holística del ser y el universo.
+        </div>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-num">03</div>
+        <div class="philosophy-text">
+          <strong style="color:var(--gold);display:block;margin-bottom:8px;font-family:'Cinzel',serif;font-size:0.9rem;">Transformación</strong>
+          Se considera la conciencia como elemento central en la práctica del yoga, buscando la transformación personal y la expansión de la conciencia.
+        </div>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-num">04</div>
+        <div class="philosophy-text">
+          <strong style="color:var(--gold);display:block;margin-bottom:8px;font-family:'Cinzel',serif;font-size:0.9rem;">Metodología</strong>
+          La física cuántica del Yoga incorpora fórmulas simbólicas y una perspectiva poética y metafísica en su enfoque.
+        </div>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-num">05</div>
+        <div class="philosophy-text">
+          <strong style="color:var(--gold);display:block;margin-bottom:8px;font-family:'Cinzel',serif;font-size:0.9rem;">Física Cuántica</strong>
+          Utiliza la física cuántica como camino para explicar conceptos espirituales y energéticos, buscando integrar principios cuánticos en la práctica y filosofía del yoga.
+        </div>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-num">06</div>
+        <div class="philosophy-text">
+          <strong style="color:var(--gold);display:block;margin-bottom:8px;font-family:'Cinzel',serif;font-size:0.9rem;">Comunicación</strong>
+          Adopta un lenguaje poético y simbólico, apelando a una experiencia más intuitiva y mística. Presentado de manera accesible para una amplia audiencia.
+        </div>
+      </div>
+    </div>
+
+    <div class="sacred-quote reveal reveal-delay-3">
+      <div class="sacred-quote-ornament">Enseñanza Central</div>
+      <blockquote>
+        "Esta filosofía ofrece un camino enriquecedor hacia la expansión de la conciencia y la
+        transformación personal. Lo que la física cuántica nos enseña hoy,
+        es lo que los yoguis han predicado por miles de años."
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       INTRODUCCIÓN
+  ══════════════════════════════════════ -->
+  <section id="intro" class="reveal">
+    <div class="two-col">
+      <div>
+        <div class="section-label">Introducción</div>
+        <h2 class="section-title">Llamado al<br><em>Viajero</em></h2>
+        <div class="divider" style="margin:28px 0;"><span class="divider-ornament">✦</span></div>
+        <div class="two-col-body reveal reveal-delay-1">
+          <p>
+            Nada de lo que leerás aquí pertenece a un tiempo lineal. Este Grimorio no fue escrito:
+            fue <strong>recordado</strong>. Sus palabras son vibraciones ancestrales que han viajado por el
+            tejido del cosmos, cruzando dimensiones y realidades para encontrarte en este instante sagrado.
+            No sostienes un libro: estás activando un portal de resonancia cuántica.
+          </p>
+          <p>
+            En este umbral, tu cuerpo y tu mente se alinean con un Pulso Interior olvidado, ese latido
+            primigenio que vibra en cada partícula de tu ser. Cada palabra, cada fórmula, cada asana y
+            cada visualización son llaves para redescubrir la memoria oculta del alma.
+          </p>
+          <p>
+            Al adentrarte en este Grimorio, te sumerges en un viaje que trasciende el tiempo y el espacio.
+            Aquí la física se vuelve poesía y el espíritu, energía viva. Este llamado al viajero te invita a
+            soltar la rigidez de la razón y permitir que la intuición te guíe.
+          </p>
+          <p>
+            Siente cómo tu cuerpo despierta, cómo tus células reconocen una armonía antigua.
+            Respira profundamente: estás en casa, en el universo. Bienvenido al regreso al
+            <em>Pulso Interior</em>, donde recobrarás la noción de tu origen.
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label reveal reveal-delay-1">Prefacio</div>
+        <h2 class="section-title reveal reveal-delay-1">El Fuego<br>que te <em>Guía</em></h2>
+        <div class="divider" style="margin:28px 0;" aria-hidden="true"><span class="divider-ornament">✦</span></div>
+        <div class="two-col-body reveal reveal-delay-2">
+          <p>
+            El Camino Cuántico del Yoga es una <strong>tecnología del alma</strong>, un puente entre
+            física subatómica y conciencia encarnada. Cada dimensión contiene una fórmula cuántica,
+            una interpretación matemática y su traducción espiritual-corporal.
+          </p>
+          <p>
+            Estas fórmulas no son conceptos abstractos: son vibraciones vivas, expresadas en el cuerpo,
+            en la respiración, en la atención. Son llaves para recordar quién eres.
+          </p>
+        </div>
+
+        <div class="yogic-card reveal reveal-delay-3" style="margin-top:24px;">
+          <div class="yogic-label">Cada Dimensión Incluye</div>
+          <ul class="prefacio-list">
+            <li>Fórmula cuántica</li>
+            <li>Explicación matemática</li>
+            <li>Interpretación yóguica</li>
+            <li>Asana guía</li>
+            <li>Secuencia de posturas</li>
+            <li>Visualización</li>
+            <li>Respiración</li>
+            <li>Práctica ritual</li>
+            <li>Enseñanza sagrada</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       DIMENSIÓN 0 — ŚŪNYABINDU
+  ══════════════════════════════════════ -->
+  <section id="dim0" class="dimension-section reveal">
+
+    <div class="dimension-header">
+      <div class="dimension-number-large" aria-hidden="true">0</div>
+      <div class="dimension-info">
+        <div class="dimension-label">Primera Dimensión</div>
+        <div class="dimension-sanskrit">Śūnyabindu</div>
+        <div class="dimension-name">El Vacío Sagrado</div>
+        <div class="dimension-desc">La matriz de toda forma. El silencio que precede a todo nacimiento.</div>
+      </div>
+    </div>
+
+    <!-- Physics context -->
+    <div class="physics-box reveal reveal-delay-1">
+      <div class="physics-box-label">Contexto Cuántico</div>
+      <p>
+        En física cuántica, la Dimensión Cero puede asociarse al <strong>vacío cuántico</strong> o estado
+        fundamental del sistema, que no es un vacío absoluto, sino un estado lleno de
+        fluctuaciones cuánticas. Aunque la energía tiende a cero, las partículas virtuales y las ondas
+        de probabilidad están siempre presentes.
+      </p>
+      <p>
+        Matemáticamente, cuando la energía E → 0, la función de onda puede tender a infinito,
+        reflejando un campo con infinitas posibilidades y potenciales. El vacío cuántico es el
+        punto de partida de toda manifestación, un campo fértil y dinámico donde todo puede surgir.
+      </p>
+    </div>
+
+    <!-- Formula -->
+    <div class="formula-card reveal reveal-delay-2">
+      <div class="formula-label">Fórmula Cuántica</div>
+      <div class="formula-equation">
+        lim<sub style="font-size:0.6em">{E → 0}</sub> ψ(E) = ∞
+      </div>
+      <div class="formula-explanation">
+        <strong>Explicación matemática:</strong> Cuando la energía tiende a cero, la función de onda ψ
+        tiende al infinito. Esto revela que el vacío es una fuente ilimitada de potencial. En mecánica cuántica,
+        el vacío no es la nada, sino un campo vibrando en silencio: el más fértil origen de toda manifestación.
+      </div>
+    </div>
+
+    <!-- Yogic interpretation -->
+    <div class="yogic-card reveal reveal-delay-3">
+      <div class="yogic-label">Interpretación Yóguica</div>
+      <p>
+        <strong>Śūnyabindu</strong> representa el momento anterior al pensamiento, el núcleo silencioso
+        antes de todo nacimiento. En el yoga, es el espacio del <em>Samādhi</em> o <em>Śūnyatā</em>,
+        donde el yo se desvanece en pura conciencia.
+      </p>
+      <p>
+        El cuerpo se convierte en receptáculo y antena del infinito. Este es el estado donde la
+        conciencia individual se disuelve en la conciencia universal, revelando que el vacío
+        no es ausencia sino presencia infinita.
+      </p>
+    </div>
+
+    <div class="divider reveal"><span class="divider-ornament">✦ ✦ ✦</span></div>
+
+    <!-- Practice Grid -->
+    <div class="practice-grid">
+
+      <div class="practice-card reveal reveal-delay-1">
+        <div class="practice-card-label">Secuencia de Posturas</div>
+        <div class="practice-card-title">7 Series · 10 Respiraciones · Ujjayi</div>
+        <ul>
+          <li><strong>Sukhasana</strong> — sentarse en quietud e intencionar el descenso hacia el vacío</li>
+          <li><strong>Supta Baddha Konasana</strong> — apertura de corazón y abandono</li>
+          <li><strong>Savasana</strong> — entrega total</li>
+          <li><strong>Balasana</strong> — integración fetal, regreso al origen</li>
+          <li><strong>Savasana</strong> (segunda vez) — descanso final para absorber la experiencia</li>
+        </ul>
+      </div>
+
+      <div class="practice-card reveal reveal-delay-2">
+        <div class="practice-card-label">Asana Guía</div>
+        <div class="practice-card-title">Savasana — Postura del Cadáver</div>
+        <p>
+          Representa la entrega total al vacío. Es la postura donde el ego suelta su forma y se
+          disuelve en el silencio cósmico.
+        </p>
+        <p style="margin-top:14px;">
+          Durante 7 minutos en Savasana con respiración yogui, sostén una piedra, flor marchita
+          o pétalo seco sobre tu ombligo. Es un símbolo de lo que muere para renacer. En silencio,
+          repite internamente:
+          <em style="display:block;margin-top:10px;color:var(--gold);font-size:1.05rem;">
+            "Soy el punto del vacío donde todo nace."
+          </em>
+        </p>
+      </div>
+
+      <div class="practice-card reveal reveal-delay-3">
+        <div class="practice-card-label">Visualización</div>
+        <div class="practice-card-title">El Punto Primordial</div>
+        <p>
+          Imagina un punto negro suspendido en el centro de tu pecho. Desde este punto, brotan
+          ondas circulares de luz que atraviesan tu cuerpo y se expanden hacia el cosmos.
+        </p>
+        <p style="margin-top:12px;">
+          Este punto representa el <em>Śūnyabindu</em>: donde todo comenzó y todo regresa.
+          Observa cómo cada onda lleva la huella de tu ser hacia la infinitud del universo.
+        </p>
+      </div>
+
+      <div class="practice-card reveal reveal-delay-1">
+        <div class="practice-card-label">Respiración</div>
+        <div class="practice-card-title">Espiral Descendente · Fibonacci</div>
+        <p style="margin-bottom:14px;">Siente cómo tu conciencia desciende hacia el núcleo del ser en cada espiral.</p>
+        <div class="breathing-pattern">
+          <span class="breath-in">Inhala 1</span>
+          <span class="breath-pause">Pausa 1</span>
+          <span class="breath-in">Inhala 2</span>
+          <span class="breath-pause">Pausa 1</span>
+          <span class="breath-in">Inhala 3</span>
+          <span class="breath-out">Exhala 5</span>
+          <span class="breath-pause">Pausa 1</span>
+          <span class="breath-out">Exhala 3</span>
+          <span class="breath-out">Exhala 2</span>
+          <span class="breath-pause">Pausa 1</span>
+          <span class="breath-out">Exhala 1</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="sacred-quote reveal">
+      <div class="sacred-quote-ornament">Enseñanza Sagrada · Dimensión 0</div>
+      <blockquote>
+        "El vacío no es ausencia: es la matriz de toda forma.<br>
+        Allí donde todo parece morir, empieza la vibración eterna."
+      </blockquote>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════
+       DIMENSIÓN 1 — ANUKALPA
+  ══════════════════════════════════════ -->
+  <section id="dim1" class="dimension-section reveal">
+
+    <div class="dimension-header">
+      <div class="dimension-number-large" aria-hidden="true">1</div>
+      <div class="dimension-info">
+        <div class="dimension-label">Segunda Dimensión</div>
+        <div class="dimension-sanskrit">Anukalpa</div>
+        <div class="dimension-name">La Vibración Primordial</div>
+        <div class="dimension-desc">El pulso primigenio. La primera vibración que da origen al universo.</div>
+      </div>
+    </div>
+
+    <!-- Physics context -->
+    <div class="physics-box reveal reveal-delay-1">
+      <div class="physics-box-label">Contexto Cuántico</div>
+      <p>
+        En física cuántica, la Dimensión Uno representa un sistema que se desarrolla a lo largo de
+        una sola coordenada espacial. Las partículas o campos cuánticos se mueven o existen en una
+        línea (como un eje x), sin ancho ni alto.
+      </p>
+      <p>
+        En este contexto, muchos fenómenos fundamentales pueden estudiarse con gran claridad.
+        Por ejemplo, una partícula en una caja unidimensional, o una onda cuántica que se
+        propaga en una única dirección. La función de onda más común en esta dimensión
+        describe una onda armónica: cómo una partícula cuántica se comporta como una
+        vibración pura que se desplaza en el espacio-tiempo.
+      </p>
+      <p>
+        La Dimensión Uno en física cuántica es el escenario más básico donde se expresa
+        el movimiento, la vibración y la propagación de energía.
+      </p>
+    </div>
+
+    <!-- Formula -->
+    <div class="formula-card reveal reveal-delay-2">
+      <div class="formula-label">Fórmula Cuántica</div>
+      <div class="formula-equation">
+        ψ(x,t) = A · e<sup style="font-size:0.65em">i(kx−ωt)</sup>
+      </div>
+      <div class="formula-vars">
+        <div class="formula-var">
+          <span class="formula-var-sym">A</span> = amplitud (intensidad de la vibración)
+        </div>
+        <div class="formula-var">
+          <span class="formula-var-sym">k</span> = número de onda (frecuencia espacial)
+        </div>
+        <div class="formula-var">
+          <span class="formula-var-sym">ω</span> = frecuencia angular (frecuencia temporal)
+        </div>
+      </div>
+      <div class="formula-explanation">
+        <strong>Explicación matemática:</strong> Esta fórmula representa una onda armónica. Cada partícula se
+        comporta como una onda que vibra en el espacio-tiempo. El universo se manifiesta como vibración pura.
+        Cada ser tiene una frecuencia, una firma energética que lo define.
+      </div>
+    </div>
+
+    <!-- Yogic interpretation -->
+    <div class="yogic-card reveal reveal-delay-3">
+      <div class="yogic-label">Interpretación Yóguica</div>
+      <p>
+        <strong>Anukalpa</strong> es el pulso primigenio, la primera vibración que da origen al universo.
+        En el cuerpo, se expresa en el latido, en la respiración, en el mantra. A través del yoga,
+        podemos volver a sincronizarnos con esa onda fundamental.
+      </p>
+      <p>
+        Somos melodías vivientes. Cada ser humano es una nota única en la gran sinfonía del cosmos,
+        una función de onda con amplitud, frecuencia y dirección propias. La práctica yóguica
+        es el arte de afinar esa nota, de regresar a la vibración original.
+      </p>
+    </div>
+
+    <div class="divider reveal"><span class="divider-ornament">✦ ✦ ✦</span></div>
+
+    <!-- Practice Grid -->
+    <div class="practice-grid">
+
+      <div class="practice-card reveal reveal-delay-1">
+        <div class="practice-card-label">Secuencia de Posturas</div>
+        <div class="practice-card-title">7 Series · 10 Respiraciones · Ujjayi</div>
+        <ul>
+          <li><strong>Tadasana</strong> — postura de base, conexión con la tierra</li>
+          <li><strong>Urdhva Hastasana</strong> — apertura hacia la vibración cósmica</li>
+          <li><strong>Ardha Uttanasana</strong> — alargar el eje, sintonizar la columna</li>
+          <li><strong>Ananda Balasana</strong> — liberar resonancia en la pelvis</li>
+          <li><strong>Savasana</strong> (2 minutos) — escucha vibraciones internas</li>
+        </ul>
+      </div>
+
+      <div class="practice-card reveal reveal-delay-2">
+        <div class="practice-card-label">Asana Guía</div>
+        <div class="practice-card-title">Urdhva Hastasana — Manos Elevadas</div>
+        <p>
+          Postura de apertura vibracional. Eleva las manos al cielo y permite que la frecuencia
+          universal entre a través de tus dedos y corone tu cuerpo.
+        </p>
+        <p style="margin-top:14px;">
+          Entona el mantra <em style="color:var(--gold)">OM</em> tres veces, cada vez más profundo.
+          Después de cada entonación, escucha en silencio la vibración residual. Luego coloca tus
+          manos en el pecho y repite internamente:
+          <em style="display:block;margin-top:10px;color:var(--gold);font-size:1.05rem;">
+            "Vibro en armonía con la fuente.<br>Yo soy sonido. Yo soy onda."
+          </em>
+        </p>
+      </div>
+
+      <div class="practice-card reveal reveal-delay-3">
+        <div class="practice-card-label">Visualización</div>
+        <div class="practice-card-title">La Onda de Luz Azul</div>
+        <p>
+          Visualiza una onda de luz azul expandiéndose desde tu ombligo hacia todo el cuerpo.
+          Cada inhalación intensifica su amplitud. Cada exhalación la estabiliza.
+        </p>
+        <p style="margin-top:12px;">
+          Eres una nota sostenida flotando en la sinfonía del universo. Siente cómo tu frecuencia
+          personal se armoniza con la frecuencia fundamental de toda la creación.
+        </p>
+      </div>
+
+      <div class="practice-card reveal reveal-delay-1">
+        <div class="practice-card-label">Respiración</div>
+        <div class="practice-card-title">Ujjayi Rítmica · 3–5</div>
+        <p style="margin-bottom:14px;">
+          Siente cómo la energía fluye como una onda que entra (creación) y sale (expansión).
+          La energía fluye en sincronía perfecta con el universo.
+        </p>
+        <div class="breathing-pattern">
+          <span class="breath-in">Inhala 3 tiempos</span>
+          <span class="breath-out">Exhala 5 tiempos</span>
+        </div>
+        <p style="margin-top:14px;font-size:0.9rem;color:var(--text-muted);">
+          Haz esta práctica frente a un cuenco tibetano o fuente sonora si es posible.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="sacred-quote reveal">
+      <div class="sacred-quote-ornament">Enseñanza Sagrada · Dimensión 1</div>
+      <blockquote>
+        "El universo no fue creado con materia,<br>
+        sino con una vibración.<br>
+        Tu alma recuerda esa nota."
+      </blockquote>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-text">Grimorio · Camino Cuántico del Yoga</div>
+  <div class="footer-ornament" aria-hidden="true">✦</div>
+  <div class="footer-text">Texto Sagrado Moderno</div>
+</footer>
+
+<script>
+  /* ── Starfield ── */
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random() < 0.12 ? 2 : 1;
+    const lo = (0.04 + Math.random() * 0.1).toFixed(2);
+    const hi = (0.3  + Math.random() * 0.55).toFixed(2);
+    s.style.cssText = `
+      width:${sz}px;height:${sz}px;
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      --d:${3+Math.random()*6}s;
+      --del:-${Math.random()*7}s;
+      --lo:${lo};--hi:${hi};
+    `;
+    starsEl.appendChild(s);
+  }
+
+  /* ── Side Nav Dots ── */
+  const sections = ['hero','indice','filosofia','intro','dim0','dim1'];
+  const dots = document.querySelectorAll('.sidenav-dot');
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const id = dot.dataset.target;
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  /* ── Active Dot on Scroll ── */
+  const sectionEls = sections.map(id => document.getElementById(id)).filter(Boolean);
+
+  const dotObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        dots.forEach(d => d.classList.toggle('active', d.dataset.target === id));
+      }
+    });
+  }, { rootMargin: '-40% 0px -40% 0px', threshold: 0 });
+
+  sectionEls.forEach(el => dotObserver.observe(el));
+
+  /* ── Scroll Reveal ── */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  /* ── Topbar fade on scroll ── */
+  const topbar = document.querySelector('.topbar');
+  window.addEventListener('scroll', () => {
+    topbar.style.background = window.scrollY > 80
+      ? 'linear-gradient(to bottom, rgba(5,3,14,0.92), rgba(5,3,14,0.6))'
+      : 'linear-gradient(to bottom, var(--void), transparent)';
+  }, { passive: true });
+</script>
+</body>
+</html>
